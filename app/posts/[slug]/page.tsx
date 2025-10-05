@@ -34,7 +34,13 @@ const formatDate = (value?: string) => {
   }).format(date);
 };
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
+interface PostPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function PostPage({ params }: PostPageProps) {
   const post = await getPost(params.slug);
 
   if (!post) {
