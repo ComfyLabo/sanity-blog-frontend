@@ -12,30 +12,25 @@ export default async function PostPage({ params }: Props): Promise<JSX.Element> 
     `*[_type == "post" && slug.current == $slug][0]{
       title,
       body,
-      author->{
-        name
-      },
+      "authorName": author->name,
       publishedAt
     }`,
     { slug }
   );
 
   if (!post) {
-    return <div>記事が見つかりませんでした。</div>;
+    return <div className="p-8 text-center text-gray-500">記事が見つかりません。</div>;
   }
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-8">
-      <article className="bg-white rounded-2xl p-8 shadow-sm">
-        <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
-        <div className="text-gray-500 text-sm mb-8">
-          {post.author?.name} ・{" "}
-          {new Date(post.publishedAt).toLocaleDateString("ja-JP")}
-        </div>
-        <div className="prose prose-lg max-w-none">
-          <PortableText value={post.body} />
-        </div>
-      </article>
+    <main className="max-w-3xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+      <p className="text-gray-500 mb-6">
+        {post.authorName} ・ {new Date(post.publishedAt).toLocaleDateString()}
+      </p>
+      <div className="prose prose-gray max-w-none">
+        <PortableText value={post.body} />
+      </div>
     </main>
   );
 }
