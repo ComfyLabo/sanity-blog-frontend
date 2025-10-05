@@ -34,14 +34,15 @@ const formatDate = (value?: string) => {
   }).format(date);
 };
 
-interface PostPageProps {
+type Props = {
   params: {
     slug: string;
   };
-}
+};
 
-export default async function PostPage({ params }: PostPageProps) {
-  const post = await getPost(params.slug);
+export default async function PostPage({ params }: Props): Promise<JSX.Element> {
+  const { slug } = params;
+  const post = await getPost(slug);
 
   if (!post) {
     return (
