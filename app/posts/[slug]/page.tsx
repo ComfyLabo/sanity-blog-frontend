@@ -5,6 +5,8 @@ import remarkGfm from "remark-gfm";
 
 import { client, type SanityPostBody } from "@/lib/sanity";
 
+export const revalidate = 60;
+
 type PostPageProps = {
   params: { slug: string };
 };

@@ -3,6 +3,8 @@ import { groq } from "next-sanity";
 
 import { client } from "@/lib/sanity";
 
+export const revalidate = 60;
+
 type Post = {
   _id: string;
   title: string;
