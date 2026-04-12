@@ -1,3 +1,4 @@
+import type { PortableTextBlock } from "@portabletext/types";
 import { createClient } from "next-sanity";
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
@@ -6,6 +7,9 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
 if (!projectId || !dataset) {
   throw new Error("Missing Sanity environment variables");
 }
+
+export type SanityPortableText = PortableTextBlock[];
+export type SanityPostBody = string | SanityPortableText;
 
 export const client = createClient({
   projectId,

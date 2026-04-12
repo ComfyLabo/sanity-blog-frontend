@@ -1,60 +1,52 @@
-import type { ReactElement } from "react";
-import type { PortableTextBlock } from "@portabletext/types";
 import { PortableText } from "@portabletext/react";
+import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-import { client } from "@/lib/sanity";
+import { client, type SanityPostBody } from "@/lib/sanity";
 
-type Params = { slug: string };
-
-type Props = {
-  params: Promise<Params>;
-  searchParams: Promise<Record<string, string | string[]>>;
+type PostPageProps = {
+  params: { slug: string };
 };
 
 type Post = {
   title: string;
-  body: PortableTextBlock[];
-  authorName?: string;
+  body?: SanityPostBody;
+  author?: string;
   publishedAt?: string;
 };
 
 const postQuery = `*[_type == "post" && slug.current == $slug][0]{
   title,
   body,
-  "authorName": author->name,
+  "author": author->name,
   publishedAt
 }`;
 
-export default async function PostPage({
-  params,
-}: Props): Promise<ReactElement> {
-  const { slug } = await params;
-
-  const post = await client.fetch<Post | null>(postQuery, { slug });
+export default async function PostPage({ params }: PostPageProps) {
+  const post = await client.fetch<Post | null>(postQuery, { slug: params.slug });
 
   if (!post) {
-    return (
-      <div className="p-8 text-center text-gray-500">記事が見つかりません。</div>
-    );
+    notFound();
   }
 
+  const authorName = post.author ?? "不明な投稿者";
   const formattedDate = post.publishedAt
-    ? new Intl.DateTimeFormat("ja-JP", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }).format(new Date(post.publishedAt))
+    ? new Date(post.publishedAt).toLocaleDateString()
     : "日付不明";
+  const body = post.body;
 
   return (
-    <main className="mx-auto max-w-3xl p-6">
-      <h1 className="mb-2 text-3xl font-bold">{post.title}</h1>
-      <p className="mb-6 text-gray-500">
-        {post.authorName ?? "不明な投稿者"} ・ {formattedDate}
+    <article className="prose prose-neutral max-w-none mx-auto px-4">
+      <h1>{post.title}</h1>
+      <p className="text-gray-500 text-sm">
+        {authorName} ・ {formattedDate}
       </p>
-      <div className="prose prose-gray max-w-none">
-        <PortableText value={post.body} />
-      </div>
-    </main>
+      {typeof body === "string" ? (
+        <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
+      ) : Array.isArray(body) ? (
+        <PortableText value={body} />
+      ) : null}
+    </article>
   );
 }
