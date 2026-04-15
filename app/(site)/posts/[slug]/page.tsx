@@ -1,14 +1,12 @@
-import { PortableText } from "@portabletext/react";
 import { notFound } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 
+import { PostBody } from "@/components/post-body";
 import { client, type SanityPostBody } from "@/lib/sanity";
 
 export const revalidate = 60;
 
 type PostPageProps = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 type Post = {
@@ -26,29 +24,24 @@ const postQuery = `*[_type == "post" && slug.current == $slug][0]{
 }`;
 
 export default async function PostPage({ params }: PostPageProps) {
-  const post = await client.fetch<Post | null>(postQuery, { slug: params.slug });
+  const { slug } = await params;
+  const post = await client.fetch<Post | null>(postQuery, { slug });
 
   if (!post) {
     notFound();
   }
 
   const authorName = post.author ?? "不明な投稿者";
-  const formattedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString()
-    : "日付不明";
+  const formattedDate = post.publishedAt ? new Date(post.publishedAt).toLocaleDateString() : "日付不明";
   const body = post.body;
 
   return (
-    <article className="prose prose-neutral max-w-none mx-auto px-4">
+    <article className="mx-auto max-w-none px-4">
       <h1>{post.title}</h1>
-      <p className="text-gray-500 text-sm">
+      <p className="text-sm text-gray-500">
         {authorName} ・ {formattedDate}
       </p>
-      {typeof body === "string" ? (
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{body}</ReactMarkdown>
-      ) : Array.isArray(body) ? (
-        <PortableText value={body} />
-      ) : null}
+      <PostBody body={body} />
     </article>
   );
 }

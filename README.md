@@ -16,6 +16,17 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+Sanity Studio is available at [http://localhost:3000/studio](http://localhost:3000/studio).
+
+To protect the Studio in a deployed environment, set these environment variables:
+
+```bash
+STUDIO_USERNAME=admin
+STUDIO_PASSWORD=change-this-password
+```
+
+In production, `/studio` returns `503` until both values are configured.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
