@@ -1,14 +1,9 @@
-import nextDynamic from "next/dynamic";
+"use client";
 
-export const dynamic = "force-static";
+import { NextStudio } from "next-sanity/studio";
 
-const StudioClient = nextDynamic(
-  () => import("@/components/studio-client").then((mod) => mod.StudioClient),
-  {
-    ssr: false,
-  },
-);
+import config from "@/sanity.config";
 
 export default function StudioPage() {
-  return <StudioClient />;
+  return <NextStudio config={config} />;
 }
