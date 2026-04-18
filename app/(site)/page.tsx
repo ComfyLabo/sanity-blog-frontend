@@ -42,21 +42,12 @@ export default async function HomePage() {
   const posts = await getPosts();
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-5 py-14 sm:py-20">
-      <div className="max-w-2xl">
-        <p className="text-sm tracking-[0.18em] text-stone-500 uppercase">Blog</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
-          シンプルに読めるブログ
-        </h1>
-        <p className="mt-4 text-base leading-8 text-stone-600">
-          Sanity で管理している記事を、余計な装飾を抑えて読みやすく一覧表示しています。
-        </p>
-      </div>
+    <main className="mx-auto w-full max-w-4xl px-5 py-14 sm:py-16">
 
       {posts.length === 0 ? (
-        <p className="mt-16 text-stone-500">まだ記事がありません。</p>
+        <p className="text-stone-500">まだ記事がありません。</p>
       ) : (
-        <ul className="mt-14 divide-y divide-stone-200 border-y border-stone-200">
+        <ul className="divide-y divide-stone-200 border-y border-stone-200">
           {posts.map((post) => (
             <li key={post._id} className="py-7">
               <p className="text-sm text-stone-500">
