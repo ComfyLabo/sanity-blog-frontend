@@ -22,9 +22,6 @@ export default function SiteLayout({
             <Link href="/about" className="transition-colors hover:text-blue-600">
               About
             </Link>
-            <Link href="/studio" className="transition-colors hover:text-blue-600">
-              Studio
-            </Link>
           </nav>
         </div>
       </header>
