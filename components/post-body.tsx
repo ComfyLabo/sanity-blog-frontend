@@ -12,7 +12,7 @@ type PostBodyProps = {
 };
 
 const DEFAULT_CLASS_NAME =
-  "prose prose-neutral max-w-none";
+  "prose prose-stone max-w-none text-[17px] leading-8 prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-stone-900 prose-p:text-stone-700 prose-strong:text-stone-900 prose-a:text-stone-900 prose-a:no-underline hover:prose-a:text-stone-600 prose-hr:border-stone-200";
 
 const paragraphClassName = "mb-6 whitespace-pre-line last:mb-0";
 

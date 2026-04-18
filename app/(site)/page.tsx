@@ -42,24 +42,33 @@ export default async function HomePage() {
   const posts = await getPosts();
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center bg-slate-50 px-4 py-16">
-      <h1 className="text-center text-4xl font-bold text-slate-900">ComfyLabo Blog</h1>
+    <main className="mx-auto w-full max-w-4xl px-5 py-14 sm:py-20">
+      <div className="max-w-2xl">
+        <p className="text-sm tracking-[0.18em] text-stone-500 uppercase">Blog</p>
+        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-stone-900 sm:text-5xl">
+          シンプルに読めるブログ
+        </h1>
+        <p className="mt-4 text-base leading-8 text-stone-600">
+          Sanity で管理している記事を、余計な装飾を抑えて読みやすく一覧表示しています。
+        </p>
+      </div>
 
       {posts.length === 0 ? (
-        <p className="mt-12 text-center text-slate-500">まだ記事がありません。</p>
+        <p className="mt-16 text-stone-500">まだ記事がありません。</p>
       ) : (
-        <ul className="mt-12 w-full space-y-6">
+        <ul className="mt-14 divide-y divide-stone-200 border-y border-stone-200">
           {posts.map((post) => (
-            <li key={post._id} className="rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md">
-              <Link
-                href={`/posts/${post.slug?.current ?? ""}`}
-                className="text-2xl font-semibold text-blue-600 hover:text-blue-700"
-              >
-                {post.title}
-              </Link>
-              <p className="mt-2 text-sm text-slate-500">
-                {post.authorName ?? "不明な投稿者"} ・ {formatDate(post.publishedAt)}
+            <li key={post._id} className="py-7">
+              <p className="text-sm text-stone-500">
+                {formatDate(post.publishedAt)}
+                {" ・ "}
+                {post.authorName ?? "不明な投稿者"}
               </p>
+              <h2 className="mt-2 text-2xl font-semibold tracking-tight text-stone-900">
+                <Link href={`/posts/${post.slug?.current ?? ""}`} className="transition-colors hover:text-stone-600">
+                  {post.title}
+                </Link>
+              </h2>
             </li>
           ))}
         </ul>

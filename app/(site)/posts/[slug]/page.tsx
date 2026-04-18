@@ -36,12 +36,18 @@ export default async function PostPage({ params }: PostPageProps) {
   const body = post.body;
 
   return (
-    <article className="mx-auto max-w-none px-4">
-      <h1>{post.title}</h1>
-      <p className="text-sm text-gray-500">
-        {authorName} ・ {formattedDate}
-      </p>
-      <PostBody body={body} />
+    <article className="mx-auto w-full max-w-3xl px-5 py-14 sm:py-20">
+      <header className="border-b border-stone-200 pb-8">
+        <p className="text-sm text-stone-500">
+          {formattedDate}
+          {" ・ "}
+          {authorName}
+        </p>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-stone-900 sm:text-4xl">
+          {post.title}
+        </h1>
+      </header>
+      <PostBody body={body} className="mt-10" />
     </article>
   );
 }
