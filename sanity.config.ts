@@ -74,6 +74,64 @@ const post = defineType({
   },
 });
 
+const about = defineType({
+  name: "about",
+  title: "About",
+  type: "document",
+  fields: [
+    defineField({
+      name: "title",
+      title: "Title",
+      type: "string",
+      initialValue: "About ComfyLabo",
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: "body",
+      title: "Body",
+      type: "array",
+      of: [{ type: "block" }],
+    }),
+    defineField({
+      name: "socialLinks",
+      title: "Social links",
+      type: "array",
+      of: [
+        defineField({
+          name: "socialLink",
+          title: "Social link",
+          type: "object",
+          fields: [
+            defineField({
+              name: "name",
+              title: "Name",
+              type: "string",
+              validation: (rule) => rule.required(),
+            }),
+            defineField({
+              name: "href",
+              title: "URL",
+              type: "url",
+              validation: (rule) => rule.required(),
+            }),
+          ],
+          preview: {
+            select: {
+              title: "name",
+              subtitle: "href",
+            },
+          },
+        }),
+      ],
+    }),
+  ],
+  preview: {
+    select: {
+      title: "title",
+    },
+  },
+});
+
 export default defineConfig({
   name: "default",
   title: "ComfyLabo Blog Studio",
@@ -82,6 +140,6 @@ export default defineConfig({
   basePath: "/studio",
   plugins: [structureTool()],
   schema: {
-    types: [post, author],
+    types: [post, author, about],
   },
 });
