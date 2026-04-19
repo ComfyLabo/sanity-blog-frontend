@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { groq } from "next-sanity";
 
@@ -43,6 +44,24 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto w-full max-w-4xl px-5 py-14 sm:py-16">
+      <header className="relative mb-10 overflow-hidden border border-stone-300 bg-stone-100 px-5 py-5 sm:px-6">
+        <Image
+          src="/comfy-labo-logo.png"
+          alt=""
+          width={320}
+          height={320}
+          aria-hidden="true"
+          className="pointer-events-none absolute left-1/2 top-1/2 h-40 w-40 -translate-x-1/2 -translate-y-1/2 object-contain opacity-10 sm:h-56 sm:w-56"
+        />
+        <div className="relative">
+          <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-stone-500">
+            Crypto Log Interface
+          </p>
+          <h1 className="mt-3 font-mono text-2xl font-semibold uppercase tracking-[0.14em] text-stone-900 sm:text-5xl">
+            Hello Crypto Investment!
+          </h1>
+        </div>
+      </header>
 
       {posts.length === 0 ? (
         <p className="text-stone-500">まだ記事がありません。</p>
