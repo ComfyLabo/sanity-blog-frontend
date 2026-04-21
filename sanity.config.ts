@@ -75,9 +75,17 @@ const post = defineType({
       type: "datetime",
     }),
     defineField({
+      name: "markdownBody",
+      title: "Body (Markdown)",
+      type: "text",
+      rows: 24,
+      description: "Obsidian などで書いた Markdown をそのまま貼り付ける本文欄",
+    }),
+    defineField({
       name: "body",
       title: "Body",
       type: "array",
+      description: "旧本文。Markdown 本文がある場合はそちらが優先表示されます。",
       of: [{ type: "block" }],
     }),
   ],

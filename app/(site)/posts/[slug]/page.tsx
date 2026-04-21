@@ -18,7 +18,7 @@ type Post = {
 
 const postQuery = `*[_type == "post" && slug.current == $slug][0]{
   title,
-  body,
+  "body": coalesce(markdownBody, body),
   "author": author->name,
   publishedAt
 }`;

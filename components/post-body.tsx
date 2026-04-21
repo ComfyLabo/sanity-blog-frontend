@@ -24,6 +24,12 @@ const blockquoteClassName = "mb-6 border-l-4 border-stone-300 pl-4 text-stone-60
 const linkClassName = "text-stone-900 underline underline-offset-4 transition-colors hover:text-stone-600";
 const codeClassName = "rounded bg-stone-100 px-1.5 py-0.5 font-mono text-[0.9em] text-stone-800";
 
+type TableBlock = {
+  _key: string;
+  _type: "table";
+  rows: string[][];
+};
+
 const isHorizontalRuleBlock = (block: PortableTextBlock) =>
   block._type === "block" &&
   block.style === "normal" &&
@@ -32,6 +38,73 @@ const isHorizontalRuleBlock = (block: PortableTextBlock) =>
   "text" in block.children[0] &&
   typeof block.children[0].text === "string" &&
   block.children[0].text.trim() === "---";
+
+const getPlainBlockText = (block: PortableTextBlock) => {
+  if (
+    block._type !== "block" ||
+    block.style !== "normal" ||
+    block.listItem ||
+    !Array.isArray(block.children) ||
+    block.children.length !== 1 ||
+    !("text" in block.children[0]) ||
+    typeof block.children[0].text !== "string" ||
+    (Array.isArray(block.children[0].marks) && block.children[0].marks.length > 0)
+  ) {
+    return null;
+  }
+
+  const text = block.children[0].text.trim();
+  if (!text || text === "---" || text.length > 40) {
+    return null;
+  }
+
+  return text;
+};
+
+const createNormalizedPortableBody = (body: PortableTextBlock[]) => {
+  const normalized: Array<PortableTextBlock | TableBlock> = [];
+
+  for (let index = 0; index < body.length; index += 1) {
+    const block = body[index];
+
+    if (isHorizontalRuleBlock(block)) {
+      normalized.push({
+        ...block,
+        style: "hr",
+      });
+      continue;
+    }
+
+    const cells: string[] = [];
+    let cursor = index;
+
+    while (cursor < body.length) {
+      const text = getPlainBlockText(body[cursor]);
+      if (!text) break;
+      cells.push(text);
+      cursor += 1;
+    }
+
+    if (cells.length >= 6 && cells.length % 3 === 0) {
+      const rows = [];
+      for (let rowIndex = 0; rowIndex < cells.length; rowIndex += 3) {
+        rows.push(cells.slice(rowIndex, rowIndex + 3));
+      }
+
+      normalized.push({
+        _key: `table-${block._key}`,
+        _type: "table",
+        rows,
+      });
+      index = cursor - 1;
+      continue;
+    }
+
+    normalized.push(block);
+  }
+
+  return normalized;
+};
 
 const markdownComponents: Components = {
   p: (props) => <p className={paragraphClassName} {...props} />,
@@ -71,6 +144,34 @@ const portableTextComponents: PortableTextComponents = {
     ),
     code: ({ children }) => <code className={codeClassName}>{children}</code>,
   },
+  types: {
+    table: ({ value }) => (
+      <div className="mb-8 overflow-x-auto">
+        <table className="w-full border-collapse text-left text-stone-700">
+          <thead>
+            <tr className="border-b border-stone-300">
+              {value.rows[0]?.map((cell: string) => (
+                <th key={cell} className="px-4 py-3 font-semibold text-stone-900">
+                  {cell}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {value.rows.slice(1).map((row: string[], rowIndex: number) => (
+              <tr key={`${value._key}-${rowIndex}`} className="border-b border-stone-200 last:border-b-0">
+                {row.map((cell) => (
+                  <td key={`${value._key}-${rowIndex}-${cell}`} className="px-4 py-3 align-top">
+                    {cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ),
+  },
 };
 
 export function PostBody({ body, className }: PostBodyProps) {
@@ -87,16 +188,7 @@ export function PostBody({ body, className }: PostBodyProps) {
   }
 
   if (Array.isArray(body)) {
-    const normalizedBody = body.map((block) => {
-      if (isHorizontalRuleBlock(block)) {
-        return {
-          ...block,
-          style: "hr",
-        };
-      }
-
-      return block;
-    });
+    const normalizedBody = createNormalizedPortableBody(body);
 
     return (
       <div className={mergedClassName}>
