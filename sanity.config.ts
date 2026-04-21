@@ -8,6 +8,20 @@ if (!projectId || !dataset) {
   throw new Error("Missing Sanity Studio environment variables");
 }
 
+const createReadableSlug = (value: string) =>
+  value
+    .normalize("NFKC")
+    .replace(/(?<=\d),(?=\d)/g, "")
+    .replace(/[【】「」『』（）()［］[\]{}]/g, "")
+    .replace(/[&/_,.:;!?]+/g, " ")
+    .replace(/[ー―‐‑‒–—―]+/g, "-")
+    .replace(/\s+/g, "-")
+    .replace(/[^a-zA-Z0-9\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}-]/gu, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase()
+    .slice(0, 96) || "post";
+
 const author = defineType({
   name: "author",
   title: "Author",
@@ -45,6 +59,7 @@ const post = defineType({
       options: {
         source: "title",
         maxLength: 96,
+        slugify: createReadableSlug,
       },
       validation: (rule) => rule.required(),
     }),
