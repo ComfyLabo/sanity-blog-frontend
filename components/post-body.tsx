@@ -1,5 +1,6 @@
 import { PortableText } from "@portabletext/react";
 import type { PortableTextComponents } from "@portabletext/react";
+import type { PortableTextBlock } from "@portabletext/types";
 import ReactMarkdown from "react-markdown";
 import type { Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -23,6 +24,15 @@ const blockquoteClassName = "mb-6 border-l-4 border-stone-300 pl-4 text-stone-60
 const linkClassName = "text-stone-900 underline underline-offset-4 transition-colors hover:text-stone-600";
 const codeClassName = "rounded bg-stone-100 px-1.5 py-0.5 font-mono text-[0.9em] text-stone-800";
 
+const isHorizontalRuleBlock = (block: PortableTextBlock) =>
+  block._type === "block" &&
+  block.style === "normal" &&
+  Array.isArray(block.children) &&
+  block.children.length === 1 &&
+  "text" in block.children[0] &&
+  typeof block.children[0].text === "string" &&
+  block.children[0].text.trim() === "---";
+
 const markdownComponents: Components = {
   p: (props) => <p className={paragraphClassName} {...props} />,
   h2: (props) => <h2 className={h2ClassName} {...props} />,
@@ -41,6 +51,7 @@ const portableTextComponents: PortableTextComponents = {
     h2: ({ children }) => <h2 className={h2ClassName}>{children}</h2>,
     h3: ({ children }) => <h3 className={h3ClassName}>{children}</h3>,
     blockquote: ({ children }) => <blockquote className={blockquoteClassName}>{children}</blockquote>,
+    hr: () => <hr />,
   },
   list: {
     bullet: ({ children }) => <ul className={`${listClassName} list-disc`}>{children}</ul>,
@@ -76,9 +87,20 @@ export function PostBody({ body, className }: PostBodyProps) {
   }
 
   if (Array.isArray(body)) {
+    const normalizedBody = body.map((block) => {
+      if (isHorizontalRuleBlock(block)) {
+        return {
+          ...block,
+          style: "hr",
+        };
+      }
+
+      return block;
+    });
+
     return (
       <div className={mergedClassName}>
-        <PortableText components={portableTextComponents} value={body} />
+        <PortableText components={portableTextComponents} value={normalizedBody} />
       </div>
     );
   }
