@@ -48,7 +48,7 @@ export default async function HomePage() {
           Crypto Log Interface
         </p>
         <h1 className="mt-3 font-mono text-2xl font-semibold uppercase tracking-[0.14em] text-stone-900 sm:text-5xl">
-          Hello Crypto Investment!
+          Hello Crypto World!
         </h1>
       </header>
 
