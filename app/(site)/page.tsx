@@ -43,12 +43,12 @@ export default async function HomePage() {
 
   return (
     <main className="mx-auto w-full max-w-4xl px-5 py-14 sm:py-16">
-      <header className="mb-10 border border-stone-300 bg-stone-100 px-5 py-5 text-center sm:px-6">
-        <p className="font-mono text-[11px] uppercase tracking-[0.32em] text-stone-500">
-          Crypto Log Interface
+      <header className="mb-10 border border-stone-300 bg-stone-100 px-5 py-6 text-center sm:px-6 sm:py-8">
+        <p className="text-sm tracking-[0.22em] text-stone-500 uppercase">
+          気軽に楽しむ暗号資産
         </p>
-        <h1 className="mt-3 font-mono text-2xl font-semibold uppercase tracking-[0.14em] text-stone-900 sm:text-5xl">
-          Hello Crypto World!
+        <h1 className="mt-3 text-4xl font-semibold tracking-[0.08em] text-stone-900 sm:text-6xl">
+          Comfy Crypto
         </h1>
       </header>
 
