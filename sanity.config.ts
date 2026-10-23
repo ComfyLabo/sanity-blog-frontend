@@ -75,6 +75,29 @@ const post = defineType({
       type: "datetime",
     }),
     defineField({
+      name: "mainImage",
+      title: "アイキャッチ画像",
+      type: "image",
+      options: { hotspot: true },
+      fields: [
+        defineField({ name: "alt", title: "画像の説明", type: "string" }),
+      ],
+    }),
+    defineField({
+      name: "articleImages",
+      title: "本文用の画像",
+      type: "array",
+      description: "ここに画像を保存し、画像のURLをMarkdown本文で使います。",
+      of: [
+        {
+          type: "image",
+          fields: [
+            defineField({ name: "alt", title: "画像の説明", type: "string" }),
+          ],
+        },
+      ],
+    }),
+    defineField({
       name: "markdownBody",
       title: "Body (Markdown)",
       type: "text",
