@@ -53,6 +53,14 @@ const post = defineType({
       validation: (rule) => rule.required(),
     }),
     defineField({
+      name: "seoDescription",
+      title: "検索・共有用の説明文",
+      type: "text",
+      rows: 3,
+      description: "記事の内容を短く説明します。検索結果の表示文は検索エンジンによって変わる場合があります。",
+      validation: (rule) => rule.max(160).warning("160文字以内を目安にしてください。"),
+    }),
+    defineField({
       name: "slug",
       title: "Slug",
       type: "slug",
