@@ -24,6 +24,20 @@ const blockquoteClassName = "mb-6 border-l-4 border-stone-300 pl-4 text-stone-60
 const linkClassName = "text-stone-900 underline underline-offset-4 transition-colors hover:text-stone-600";
 const codeClassName = "rounded bg-stone-100 px-1.5 py-0.5 font-mono text-[0.9em] text-stone-800";
 
+const isAffiliateLink = (href?: string) => {
+  if (!href) return false;
+  try {
+    const url = new URL(href);
+    return (
+      url.protocol === "https:" &&
+      ((["amazon.co.jp", "www.amazon.co.jp"].includes(url.hostname) && url.searchParams.has("tag")) ||
+        url.hostname === "hb.afl.rakuten.co.jp")
+    );
+  } catch {
+    return false;
+  }
+};
+
 type TableBlock = {
   _key: string;
   _type: "table";
@@ -114,7 +128,25 @@ const markdownComponents: Components = {
   ol: (props) => <ol className={`${listClassName} list-decimal`} {...props} />,
   li: (props) => <li className={listItemClassName} {...props} />,
   blockquote: (props) => <blockquote className={blockquoteClassName} {...props} />,
-  a: (props) => <a className={linkClassName} {...props} />,
+  a: ({ href, children }) => (
+    <a
+      className={`${linkClassName} break-words`}
+      href={href}
+      rel={isAffiliateLink(href) ? "sponsored nofollow noopener" : undefined}
+    >
+      {children}
+    </a>
+  ),
+  // Markdown image URLs include Sanity CDN assets and existing external images.
+  // eslint-disable-next-line @next/next/no-img-element
+  img: ({ src, alt }) => <img src={src} alt={alt ?? ""} loading="lazy" className="my-6 h-auto max-w-full rounded-lg" />,
+  table: ({ children }) => (
+    <div className="mb-8 max-w-full overflow-x-auto">
+      <table className="w-full border-collapse text-left">{children}</table>
+    </div>
+  ),
+  th: ({ children }) => <th className="border-b border-stone-300 px-3 py-2 font-semibold">{children}</th>,
+  td: ({ children }) => <td className="border-b border-stone-200 px-3 py-2 align-top">{children}</td>,
   code: (props) => <code className={codeClassName} {...props} />,
 };
 
