@@ -1,118 +1,46 @@
-import { FaGithub, FaGlobe, FaXTwitter } from "react-icons/fa6";
-
+import type { Metadata } from "next";
+import Link from "next/link";
 import { PostBody } from "@/components/post-body";
-import { client, type SanityPostBody } from "@/lib/sanity";
+import { siteUrl } from "@/lib/site-url";
 
-export const revalidate = 60;
+export function generateMetadata(): Metadata {
+  const canonical = siteUrl("/about");
+  return {
+    title: "運営者情報 | ComfyLabo",
+    description: "ComfyLaboの運営者green_bambooと、ブログのテーマ・発信方針をご紹介します。",
+    ...(canonical ? { alternates: { canonical } } : {}),
+  };
+}
 
-const fallbackSocials = [
-  {
-    name: "X",
-    href: "https://x.com/yourhandle",
-    icon: FaXTwitter,
-  },
-  {
-    name: "GitHub",
-    href: "https://github.com/yourhandle",
-    icon: FaGithub,
-  },
-  {
-    name: "Blog",
-    href: "https://comfylabo.com",
-    icon: FaGlobe,
-  },
-];
+const body = `こんにちは、green_bambooです。
 
-type SocialLink = {
-  name: string;
-  href: string;
-};
+当ブログ「ComfyLabo」をご覧いただきありがとうございます。
+私はサラリーマンとして働きながら、少額で暗号資産投資を続けています。
 
-type AboutContent = {
-  title?: string;
-  body?: SanityPostBody;
-  socialLinks?: SocialLink[];
-};
+ComfyLaboでは、仮想通貨・暗号資産、AI活用、ガジェット、ライフスタイル、業務効率化をテーマに、実際に体験したことや学んだことを発信しています。
+専門家としてではなく、一人の実践者として初心者にも分かりやすい情報発信を心掛けています。
 
-const aboutQuery = `*[_type == "about"][0]{
-  title,
-  body,
-  socialLinks[]{
-    name,
-    href
-  }
-}`;
+## このブログについて
 
-const fallbackBody = [
-  {
-    _type: "block",
-    _key: "fallback-body-1",
-    style: "normal",
-    markDefs: [],
-    children: [
-      {
-        _type: "span",
-        _key: "fallback-span-1",
-        text: "ComfyLabo は「ゆったり・楽しく・学べる空間」をテーマに、日々の暮らしや学びをより心地よくするヒントをお届けするブログです。運営者はデザインとプロダクトが大好きなクリエイターで、プログラミングやライフスタイル、ツール活用など幅広いテーマを発信しています。",
-        marks: [],
-      },
-    ],
-  },
-  {
-    _type: "block",
-    _key: "fallback-body-2",
-    style: "normal",
-    markDefs: [],
-    children: [
-      {
-        _type: "span",
-        _key: "fallback-span-2",
-        text: "ゆるやかな時間のなかで、ふっと気持ちが軽くなるようなアイデアや、挑戦を後押しするナレッジを届けたい。そんな想いで、ComfyLabo はこれからもみなさんの日常に寄り添うコンテンツを紡いでいきます。",
-        marks: [],
-      },
-    ],
-  },
-] satisfies SanityPostBody;
+ComfyLaboは「少しでも快適な毎日をつくる実験室」をコンセプトに運営しています。
+仮想通貨やAIなどの新しい技術を、難しい専門用語だけでなく実体験を交えながら発信しています。
 
-const socialIconMap = {
-  X: FaXTwitter,
-  GitHub: FaGithub,
-  Blog: FaGlobe,
-} as const;
+## 投資に関する注意事項
 
-export default async function AboutPage() {
-  const about = await client.fetch<AboutContent | null>(aboutQuery);
-  const title = about?.title ?? "About ComfyLabo";
-  const body = about?.body ?? fallbackBody;
-  const socials = (about?.socialLinks?.length ? about.socialLinks : fallbackSocials).map((social) => ({
-    ...social,
-    icon: socialIconMap[social.name as keyof typeof socialIconMap] ?? FaGlobe,
-  }));
+当ブログは投資助言を目的としたものではありません。
+投資に関する最終的な判断は、ご自身の責任でお願いいたします。
 
+運営者：green_bamboo
+
+ブログ名：ComfyLabo`;
+
+export default function AboutPage() {
   return (
-    <main className="mx-auto flex min-h-[80vh] w-full max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-      <div className="space-y-6 rounded-2xl bg-white p-10 shadow-sm">
-        <h1 className="text-4xl font-semibold text-slate-900">{title}</h1>
-        <PostBody body={body} className="mx-auto text-left" />
-
-        <div className="pt-4">
-          <h2 className="text-lg font-medium text-slate-800">SNS Links</h2>
-          <div className="mt-4 flex justify-center gap-6">
-            {socials.map((social) => (
-              <a
-                key={social.name}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.name}
-                className="text-2xl text-gray-600 transition-colors hover:text-blue-600"
-              >
-                <social.icon />
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
+    <main className="mx-auto w-full max-w-3xl px-5 py-14">
+      <h1 className="mb-8 text-3xl font-semibold">運営者情報</h1>
+      <PostBody body={body} />
+      <h2 className="mb-4 mt-8 text-2xl font-semibold">お問い合わせ</h2>
+      <p>ご質問やご依頼は、<Link className="underline underline-offset-4" href="/contact">お問い合わせページ</Link>からメールでご連絡ください。</p>
     </main>
   );
 }

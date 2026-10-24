@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-url";
 import Link from "next/link";
 import { groq } from "next-sanity";
 
 import { client } from "@/lib/sanity";
 
 export const revalidate = 60;
+
+export function generateMetadata(): Metadata {
+  const canonical = siteUrl("/");
+  return canonical ? { alternates: { canonical } } : {};
+}
 
 type Post = {
   _id: string;

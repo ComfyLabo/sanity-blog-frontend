@@ -20,7 +20,7 @@ export default function SiteLayout({
               Home
             </Link>
             <Link href="/about" className="transition-colors hover:text-stone-900">
-              About
+              運営者情報
             </Link>
           </nav>
         </div>
@@ -29,7 +29,7 @@ export default function SiteLayout({
       <div className="flex-1">{children}</div>
 
       <footer className="border-t border-stone-200">
-        <div className="mx-auto max-w-4xl px-5 py-6 text-sm text-stone-500">© 2025 ComfyLabo</div>
+        <div className="mx-auto max-w-4xl px-5 py-6 text-sm text-stone-500">© ComfyLabo · <Link href="/contact" className="underline underline-offset-4">お問い合わせ</Link></div>
       </footer>
     </div>
   );
