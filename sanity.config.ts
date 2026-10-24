@@ -119,6 +119,34 @@ const post = defineType({
       description: "旧本文。Markdown 本文がある場合はそちらが優先表示されます。",
       of: [{ type: "block" }],
     }),
+    defineField({
+      name: "legacyWordPressId",
+      title: "元WordPress記事ID",
+      type: "string",
+      description: "移行元の記事ID。slugやSanityの文書IDとは別に記録します。",
+      validation: (rule) =>
+        rule.regex(/^[0-9]+$/).error("WordPress記事IDを半角数字で入力してください。"),
+    }),
+    defineField({
+      name: "legacyUrls",
+      title: "元WordPress URL",
+      type: "array",
+      description: "確認できた旧URLを記録します。複数形式を保持でき、転送設定には使用しません。",
+      of: [
+        {
+          type: "url",
+          validation: (rule) => rule.uri({ scheme: ["http", "https"] }),
+        },
+      ],
+      validation: (rule) => rule.unique(),
+    }),
+    defineField({
+      name: "migrationNotes",
+      title: "移行作業メモ（本文・SEOには使用しません）",
+      type: "text",
+      rows: 6,
+      description: "未確認事項や内部リンク案を記録します。非公開を保証する欄ではありません。秘密情報は入力しないでください。",
+    }),
   ],
   preview: {
     select: {
