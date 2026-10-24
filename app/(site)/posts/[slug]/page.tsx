@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { siteUrl } from "@/lib/site-url";
 
 import { PostBody } from "@/components/post-body";
 import { client, type SanityPostBody } from "@/lib/sanity";
@@ -42,11 +43,14 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   const description = post.seoDescription?.trim() || `${post.title}。ComfyLaboの体験・解説記事です。`;
   const images = post.imageUrl ? [{ url: post.imageUrl, alt: post.imageAlt || post.title }] : [];
 
+  const canonical = siteUrl(`/posts/${encodeURIComponent(slug)}`);
   return {
+    ...(canonical ? { alternates: { canonical } } : {}),
     title,
     description,
     openGraph: {
       type: "article",
+      ...(canonical ? { url: canonical } : {}),
       locale: "ja_JP",
       siteName: "ComfyLabo",
       title,
